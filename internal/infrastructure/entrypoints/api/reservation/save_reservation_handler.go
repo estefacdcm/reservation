@@ -14,13 +14,14 @@ const errorDecodingBody = "Error decoding body"
 
 func (handler *ReservationHandler) SaveReservationHandler(c echo.Context) error {
 	var body *model.ReservationModel
-	errBind := c.Bind(body)
+	errBind := c.Bind(&body)
 	if errBind != nil {
 		logrus.Errorf(errorDecodingBody+": %v", errBind)
 		response := responseDto.ResponseError{
 			Success:   false,
 			Error:     []string{errorDecodingBody},
 			Timestamp: time.Now(),
+			Data:      errBind,
 		}
 		return c.JSON(http.StatusBadRequest, response)
 	}
@@ -31,6 +32,7 @@ func (handler *ReservationHandler) SaveReservationHandler(c echo.Context) error 
 			Success:   false,
 			Error:     []string{err.Error()},
 			Timestamp: time.Now(),
+			Data:      body,
 		}
 		return c.JSON(http.StatusConflict, response)
 	}

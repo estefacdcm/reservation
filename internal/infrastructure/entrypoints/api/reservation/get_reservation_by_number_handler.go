@@ -16,9 +16,9 @@ const (
 )
 
 func (handler *ReservationHandler) GetReservationByNumberHandler(c echo.Context) error {
-	reservationNumberQP := c.QueryParam("reservation_number")
+	reservationNumberQP := c.Param("reservationNumber")
 
-	if reservationNumberQP != "" {
+	if reservationNumberQP == "" {
 		return c.JSON(http.StatusBadRequest, utils.BuildErrorResponse(false, time.Now(), strings.Split(invalidParamReservationNumber, "; ")))
 	}
 

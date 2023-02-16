@@ -14,5 +14,6 @@ type (
 		Success   bool      `json:"success"`
 		Error     []string  `json:"error"`
 		Timestamp time.Time `json:"timestamp"`
+		Data      any       `json:"data,omitempty"`
 	}
 )
