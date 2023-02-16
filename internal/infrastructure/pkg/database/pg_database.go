@@ -16,8 +16,7 @@ const (
 )
 
 func NewPostgresConnection() (db *gorm.DB) {
-	//connection := fmt.Sprintf(connectionString, os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
-	connection := fmt.Sprintf(connectionString, "localhost", "5432", "postgres", "postgres", "reservation")
+	connection := fmt.Sprintf(connectionString, os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 	db, err := gorm.Open(gormpostgres.Open(connection), &gorm.Config{
 		SkipDefaultTransaction: false,
 		Logger:                 logger.Default.LogMode(logger.Info),
