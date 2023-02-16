@@ -20,7 +20,7 @@ func (handler *ReservationHandler) GetReservationByCustomerIDHandler(c echo.Cont
 
 	reservationByCustomerIDResponse, err := handler.reservationUseCase.GetReservationByCustomerIDUseCase(customerID)
 	if err != nil {
-		return c.JSON(http.StatusConflict, utils.BuildErrorResponse(false, time.Now(), []string{err.Error()}))
+		return c.JSON(http.StatusNotFound, utils.BuildErrorResponse(false, time.Now(), []string{err.Error()}))
 	}
 
 	return c.JSON(http.StatusOK, utils.BuildSuccessfulResponse(true, time.Now(), reservationByCustomerIDResponse))
