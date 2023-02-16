@@ -12,7 +12,7 @@ import (
 const invalidParamCustomerID = "Invalid param customer ID"
 
 func (handler *ReservationHandler) GetReservationByCustomerIDHandler(c echo.Context) error {
-	customerID := c.QueryParam("customer_id")
+	customerID := c.Param("customerId")
 
 	if customerID == "" {
 		return c.JSON(http.StatusBadRequest, utils.BuildErrorResponse(false, time.Now(), strings.Split(invalidParamCustomerID, "; ")))

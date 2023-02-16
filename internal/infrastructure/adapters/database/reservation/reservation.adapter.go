@@ -14,11 +14,13 @@ import (
 )
 
 const (
-	tableName                              = "reservation"
-	errorCreatingReservation               = "error creating reservation"
-	errorInsertReservationRowsAffectedZero = "error inserting reservation rows affected"
-	errorFindReservartionByCustomerID      = "an error occurred while trying to query reservation by customerID"
-	errorFindReservartionByNumber          = "an error occurred while trying to query reservation by number"
+	tableName                                 = "reservation"
+	errorCreatingReservation                  = "error creating reservation"
+	errorInsertReservationRowsAffectedZero    = "error inserting reservation rows affected"
+	errorInsertReservationRowExistsCustomerID = "error inserting already exists row with that customerID"
+	errorInsertReservationRowExistsNumber     = "error inserting already exists row with that number"
+	errorFindReservartionByCustomerID         = "an error occurred while trying to query reservation by customerID"
+	errorFindReservartionByNumber             = "an error occurred while trying to query reservation by number"
 )
 
 type RepositoryReservationAdapter struct {
@@ -33,6 +35,12 @@ func NewRepositoryReservationAdapter(db *gorm.DB) *RepositoryReservationAdapter 
 
 func (rra *RepositoryReservationAdapter) SaveReservation(reservationEntity *entity.ReservationEntity) (*entity.ReservationEntity, error) {
 	dbName, err := database.GetDatabaseNameConnection()
+	if err != nil {
+		return nil, err
+	}
+
+	err = rra.ValidateNewReservation(reservationEntity)
+
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +65,7 @@ func (rra *RepositoryReservationAdapter) FindReservationByCustomerID(customerID 
 	}
 
 	trxDBResult := rra.db.Clauses(dbresolver.Use(dbName)).Table(tableName).
-		Select("customer_id", "reservation_number").
+		Select("customer_id", "reservation_number", "creation_date").
 		Where("reservation.customer_id = ?", customerID).
 		Find(&reservation)
 
@@ -77,7 +85,7 @@ func (rra *RepositoryReservationAdapter) FindReservartionByNumber(reservationNum
 	}
 
 	trxDBResult := rra.db.Clauses(dbresolver.Use(dbName)).Table(tableName).
-		Select("customer_id", "reservation_number").
+		Select("customer_id", "reservation_number", "creation_date").
 		Where("reservation.reservation_number = ?", reservationNumber).
 		Find(&reservation)
 
@@ -87,4 +95,22 @@ func (rra *RepositoryReservationAdapter) FindReservartionByNumber(reservationNum
 	}
 
 	return reservation, nil
+}
+
+func (rra *RepositoryReservationAdapter) ValidateNewReservation(reservationEntity *entity.ReservationEntity) error {
+	reservationByCustomerID, _ := rra.FindReservationByCustomerID(reservationEntity.CustomerID)
+
+	if len(reservationByCustomerID) > 0 {
+		logrus.Errorln(errorCreatingReservation, errorInsertReservationRowExistsCustomerID)
+		return errors.New(errorInsertReservationRowExistsCustomerID)
+	}
+
+	reservationByNumber, _ := rra.FindReservartionByNumber(reservationEntity.ReservationNumber)
+
+	if len(reservationByNumber) > 0 {
+		logrus.Errorln(errorCreatingReservation, errorInsertReservationRowExistsNumber)
+		return errors.New(errorInsertReservationRowExistsNumber)
+	}
+
+	return nil
 }

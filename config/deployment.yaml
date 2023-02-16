@@ -8,12 +8,12 @@ spec:
     - name: PORT
       value: 8080
     - name: DB_HOST
-      value: ""
+      value: "localhost"
     - name: DB_PORT
-      value: 8080
+      value: 5432
     - name: DB_USER
-      value: ""
+      value: "postgres"
     - name: DB_PASSWORD
-      value: ""
+      value: "postgres"
     - name: DB_NAME
       value: "reservation"

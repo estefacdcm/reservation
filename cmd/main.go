@@ -40,8 +40,8 @@ func runServer(reservationHandler *reservationHandler.ReservationHandler, health
 	apiGroup := e.Group("reservation")
 	apiGroup.GET("/health", healthHandler.Health)
 	apiGroup.POST("/", reservationHandler.SaveReservationHandler)
-	apiGroup.GET("/:customerID", reservationHandler.GetReservationByCustomerIDHandler)
-	apiGroup.GET("/:number", reservationHandler.GetReservationByNumberHandler)
+	apiGroup.GET("/customer/:customerId", reservationHandler.GetReservationByCustomerIDHandler)
+	apiGroup.GET("/reservationNumber/:reservationNumber", reservationHandler.GetReservationByNumberHandler)
 
 	err := e.Start(":" + os.Getenv("PORT"))
 	if err != nil {
