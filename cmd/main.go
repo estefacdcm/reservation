@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load("local.env")
 	if err != nil {
 		logrus.Errorf("error loading .env, %v", err)
 	}

@@ -74,6 +74,10 @@ func (rra *RepositoryReservationAdapter) FindReservationByCustomerID(customerID 
 		return make([]dto.ReservationDTO, 0), errors.New(errorFindReservartionByCustomerID)
 	}
 
+	if len(reservation) == 0 {
+		return nil, errors.New(errorFindReservartionByCustomerID)
+	}
+
 	return reservation, nil
 }
 
